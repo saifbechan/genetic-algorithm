@@ -66,7 +66,7 @@
     "rimraf": "^3.0.2",
     "sass": "^1.32.4",
     "start-server-and-test": "^1.11.7",
-    "stylelint": "^13.8.0",
+    "stylelint": "^13.9.0",
     "stylelint-config-standard": "^20.0.0",
     "typescript": "^4.1.3"
   },

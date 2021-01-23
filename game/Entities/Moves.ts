@@ -1,7 +1,7 @@
 import P5, { Vector } from 'p5';
 
 export default class Moves {
-  // the moves the bee will make
+  // the moves the cell will make
   private readonly moves: Vector[] = [];
 
   constructor(p5: P5, lifespan: number) {
@@ -10,6 +10,10 @@ export default class Moves {
       // creates a random Vector [x,y]
       this.moves.push(p5.createVector(p5.random(-1, 1), p5.random(-1, 1)).setMag(0.1));
     }
+  }
+
+  get length(): number {
+    return this.moves.length;
   }
 
   pop(): Vector | undefined {

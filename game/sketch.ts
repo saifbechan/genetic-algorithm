@@ -1,35 +1,29 @@
 import P5 from 'p5';
 
 import Cell from './Entities/Cell';
-import Moves from './Entities/Moves';
+import populate from './Functions/populate';
 
 const sketch = (p5: P5): void => {
-  const height = p5.windowHeight - 4;
-  const width = p5.windowWidth - 4;
-
-  const lifespan = 1000;
-
-  let cell: Cell;
-  let moves: Moves;
-
-  p5.setup = (): void => {
-    // just drawing the canvas
-    const canvas = p5.createCanvas(width, height);
-    canvas.attribute('data-testid', 'sketch');
-    // -----------------------
-
-    // creating a random set of moves
-    moves = new Moves(p5, lifespan);
-
-    // creating a cell with the new moves
-    cell = new Cell(p5, p5.width / 2, p5.height - 10, moves);
-  };
+  // the number of cells per generation
+  const population = 50;
+  // how long does a generation last
+  const lifespan = 500;
+  // our population of cells
+  const cells: Cell[] = populate(p5, population, lifespan);
 
   p5.draw = (): void => {
+    // giving the background a color
     p5.background(194, 210, 234);
 
-    // draw a new step of the cell
-    cell.draw(p5);
+    // draw the cells
+    cells.forEach((cell) => {
+      cell.draw(p5);
+    });
+  };
+
+  p5.setup = (): void => {
+    const canvas = p5.createCanvas(p5.windowWidth - 4, p5.windowHeight - 4);
+    canvas.attribute('data-testid', 'sketch');
   };
 };
 

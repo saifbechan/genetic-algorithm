@@ -10,10 +10,10 @@ export default class Cell {
   private readonly position: Vector;
   private readonly dimensions: Vector;
 
-  constructor(p5: P5, x: number, y: number, moves: Moves) {
+  constructor(p5: P5, moves: Moves) {
     this.moves = moves;
 
-    this.position = p5.createVector(x, y);
+    this.position = p5.createVector(p5.windowWidth / 2, p5.windowHeight - 10);
     this.acceleration = p5.createVector();
     this.velocity = p5.createVector();
 
@@ -24,12 +24,12 @@ export default class Cell {
     return p5.createVector(p5.random(15, 24), p5.random(15, 24));
   }
 
-  update(p5: P5): void {
+  update(p5: P5): boolean {
+    // get the next move of the cell
     const next = this.moves.pop();
 
-    if (!next) {
-      return;
-    }
+    // return if there is no next move
+    if (!next) return false;
 
     this.acceleration.add(next);
     this.velocity.add(this.acceleration);
@@ -40,11 +40,13 @@ export default class Cell {
     this.velocity.limit(3);
 
     if (this.moves.length % 3 === 0) this.dimensions.set(this.getDimensions(p5));
+
+    return true;
   }
 
   draw(p5: P5): void {
-    // get the next position of the cell
-    this.update(p5);
+    // update the position of the cell
+    if (!this.update(p5)) return;
 
     // draw the cell
     p5.noStroke();

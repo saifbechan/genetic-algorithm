@@ -1,23 +1,23 @@
 import P5, { Vector } from 'p5';
 
-import Moves from './Moves';
-
 export default class Cell {
-  private readonly moves: Moves;
+  private readonly dna: Vector[] = [];
 
   private readonly acceleration: Vector;
   private readonly velocity: Vector;
   private readonly position: Vector;
   private readonly dimensions: Vector;
 
-  constructor(p5: P5, moves: Moves) {
-    this.moves = moves;
-
+  constructor(p5: P5, lifespan: number) {
     this.position = p5.createVector(p5.windowWidth / 2, p5.windowHeight - 10);
     this.acceleration = p5.createVector();
     this.velocity = p5.createVector();
 
     this.dimensions = this.getDimensions(p5);
+
+    while (this.dna.length < lifespan) {
+      this.dna.push(p5.createVector(p5.random(-1, 1), p5.random(-1, 1)).setMag(0.1));
+    }
   }
 
   getDimensions(p5: P5): Vector {
@@ -26,7 +26,7 @@ export default class Cell {
 
   update(p5: P5): boolean {
     // get the next move of the cell
-    const next = this.moves.pop();
+    const next = this.dna.pop();
 
     // return if there is no next move
     if (!next) return false;
@@ -39,7 +39,7 @@ export default class Cell {
     this.acceleration.mult(0);
     this.velocity.limit(3);
 
-    if (this.moves.length % 3 === 0) this.dimensions.set(this.getDimensions(p5));
+    if (this.dna.length % 3 === 0) this.dimensions.set(this.getDimensions(p5));
 
     return true;
   }

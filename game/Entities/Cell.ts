@@ -50,6 +50,7 @@ export default class Cell {
 
     // draw the cell
     p5.noStroke();
+    p5.fill(255, 0, 64, 80);
     p5.ellipse(this.position.x, this.position.y, this.dimensions.x, this.dimensions.y);
   }
 }

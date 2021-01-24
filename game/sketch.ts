@@ -1,24 +1,35 @@
 import P5 from 'p5';
 
 import Cell from './Entities/Cell';
+import Target from './Entities/Target';
 import populate from './Functions/populate';
 
-const sketch = (p5: P5): void => {
+enum Population {
   // the number of cells per generation
-  const population = 50;
+  Size = 50,
+
   // how long does a generation last
-  const lifespan = 500;
+  Lifespan = 500,
+}
+
+const sketch = (p5: P5): void => {
+  // our target
+  const target: Target = new Target(p5);
+
   // our population of cells
-  const cells: Cell[] = populate(p5, population, lifespan);
+  const cells: Cell[] = populate(p5, Population.Size, Population.Lifespan);
 
   p5.draw = (): void => {
     // giving the background a color
-    p5.background(194, 210, 234);
+    p5.background(11, 0, 20);
 
     // draw the cells
     cells.forEach((cell) => {
       cell.draw(p5);
     });
+
+    // draw the target
+    target.draw(p5);
   };
 
   p5.setup = (): void => {

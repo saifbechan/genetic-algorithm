@@ -1,6 +1,6 @@
 import P5, { Vector } from 'p5';
 
-import Cell from './Cell';
+import Cell from '../Entities/Cell';
 
 export default class DNA {
   static generate(p5: P5, lifespan: number, parents: Cell[]): Vector[] {

@@ -2,6 +2,7 @@ import { sampleSize } from 'lodash';
 import P5 from 'p5';
 
 import Cell from '../Entities/Cell';
+import DNA from '../Entities/DNA';
 
 const populate = (
   p5: P5,
@@ -14,8 +15,13 @@ const populate = (
     // get two random parents from the pool
     const parents = sampleSize(pool, 2);
 
+    // generate either:
+    //   - dna from two parents
+    //   - dna created randomly
+    const dna = DNA.generate(p5, lifespan, parents);
+
     // create a new cell
-    const cell = new Cell(p5, lifespan, parents);
+    const cell = new Cell(p5, dna);
 
     // add our cell to the population
     cells.push(cell);

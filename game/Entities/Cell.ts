@@ -14,7 +14,11 @@ export default class Cell extends Blobby {
       100,
       50,
       p5.createVector(1000, 1000, 1000),
-      p5.createVector(Math.random() / 10, Math.random() / 10, Math.random() / 10),
+      p5.createVector(
+        Math.random() / 10,
+        Math.random() / 10,
+        Math.random() / 10
+      ),
       p5.createVector(p5.windowWidth / 2, p5.windowHeight - 10),
       [157, 2, 8, 95]
     );
@@ -23,7 +27,9 @@ export default class Cell extends Blobby {
     this.velocity = p5.createVector();
 
     while (this.dna.length < lifespan) {
-      this.dna.push(p5.createVector(p5.random(-1, 1), p5.random(-1, 1)).setMag(0.1));
+      this.dna.push(
+        p5.createVector(p5.random(-1, 1), p5.random(-1, 1)).setMag(0.1)
+      );
     }
   }
 

@@ -11,6 +11,8 @@ export default class Cell extends Blobby {
 
   private step = 0;
   private fitness = 0;
+  private crashed = false;
+  private reached = false;
 
   constructor(p5: P5, lifespan: number, parents: Cell[]) {
     super(
@@ -74,6 +76,11 @@ export default class Cell extends Blobby {
       target.getPosition().x,
       target.getPosition().y
     );
+
+    if (distance_to_target < 40) {
+      this.reached = true;
+    }
+
     this.fitness = this.p5.map(
       distance_to_target,
       0,
@@ -81,6 +88,14 @@ export default class Cell extends Blobby {
       this.p5.windowWidth,
       0
     );
+
+    if (this.reached) {
+      this.fitness *= 10;
+    }
+
+    if (this.crashed) {
+      this.fitness /= 10;
+    }
   }
 
   normalizeFitness(max_fitness: number): void {
@@ -117,9 +132,24 @@ export default class Cell extends Blobby {
 
   draw(): void {
     // update the position of the cell
-    if (!this.update()) return;
+    if (this.crashed || this.reached || !this.update()) return;
+
+    // check if we crashed
+    this.checkIfCrashed();
 
     // draw the cell
     super.draw();
+  }
+
+  private checkIfCrashed(): void {
+    if (this.position.x < 0 || this.position.x > this.p5.windowWidth) {
+      this.crashed = true;
+      return;
+    }
+
+    if (this.position.y < 0 || this.position.y > this.p5.windowHeight) {
+      this.crashed = true;
+      return;
+    }
   }
 }

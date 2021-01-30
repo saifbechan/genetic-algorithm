@@ -43,9 +43,9 @@ const sketch = (p5: P5): void => {
     } else {
       // draw the cells
       cells.forEach((cell) => {
-        cell.setFitness(target);
-
         cell.draw();
+
+        cell.setFitness(target);
       });
 
       // draw the target

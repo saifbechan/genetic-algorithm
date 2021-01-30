@@ -1,6 +1,7 @@
 import P5, { Vector } from 'p5';
 
 import { Blobby } from '../ Classes/Blobby';
+import Target from './Target';
 
 export default class Cell extends Blobby {
   private readonly dna: Vector[] = [];
@@ -8,8 +9,11 @@ export default class Cell extends Blobby {
   private readonly acceleration: Vector;
   private readonly velocity: Vector;
 
+  private fitness = 0;
+
   constructor(p5: P5, lifespan: number) {
     super(
+      p5,
       10,
       100,
       50,
@@ -23,14 +27,32 @@ export default class Cell extends Blobby {
       [157, 2, 8, 95]
     );
 
-    this.acceleration = p5.createVector();
-    this.velocity = p5.createVector();
+    this.acceleration = this.p5.createVector();
+    this.velocity = this.p5.createVector();
 
     while (this.dna.length < lifespan) {
       this.dna.push(
-        p5.createVector(p5.random(-1, 1), p5.random(-1, 1)).setMag(0.1)
+        this.p5
+          .createVector(this.p5.random(-1, 1), this.p5.random(-1, 1))
+          .setMag(0.1)
       );
     }
+  }
+
+  setFitness(target: Target): void {
+    const distance_to_target = this.p5.dist(
+      this.position.x,
+      this.position.y,
+      target.getPosition().x,
+      target.getPosition().y
+    );
+    this.fitness = this.p5.map(
+      distance_to_target,
+      0,
+      this.p5.windowWidth,
+      this.p5.windowWidth,
+      0
+    );
   }
 
   update(): boolean {
@@ -51,11 +73,15 @@ export default class Cell extends Blobby {
     return true;
   }
 
-  draw(p5: P5): void {
+  draw(): void {
     // update the position of the cell
     if (!this.update()) return;
 
     // draw the cell
-    super.draw(p5);
+    super.draw();
+  }
+
+  getFitness(): number {
+    return this.fitness;
   }
 }

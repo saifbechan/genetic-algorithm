@@ -1,1 +1,2 @@
-export default {};
+const mutate = {};
+export default mutate;

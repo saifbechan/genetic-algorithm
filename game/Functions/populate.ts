@@ -2,7 +2,7 @@ import P5 from 'p5';
 
 import Cell from '../Entities/Cell';
 
-export default (p5: P5, population: number, lifespan: number): Cell[] => {
+const populate = (p5: P5, population: number, lifespan: number): Cell[] => {
   const cells = [];
   while (cells.length < population) {
     // create a new cell
@@ -13,3 +13,5 @@ export default (p5: P5, population: number, lifespan: number): Cell[] => {
   }
   return cells;
 };
+
+export default populate;

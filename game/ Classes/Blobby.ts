@@ -1,6 +1,8 @@
 import P5, { Vector } from 'p5';
 
 export abstract class Blobby {
+  protected readonly p5: P5;
+
   protected readonly position: Vector;
   protected readonly color: number[];
 
@@ -12,6 +14,7 @@ export abstract class Blobby {
   protected readonly noise: number;
 
   protected constructor(
+    p5: P5,
     radius: number,
     vertices: number,
     noise: number,
@@ -20,6 +23,7 @@ export abstract class Blobby {
     position: Vector,
     color: number[]
   ) {
+    this.p5 = p5;
     this.radius = radius;
     this.vertices = vertices;
     this.noise = noise;
@@ -29,43 +33,47 @@ export abstract class Blobby {
     this.color = color;
   }
 
-  protected draw(p5: P5): void {
+  protected draw(): void {
     const px_offset = this.radius / 2;
 
-    p5.push();
-    p5.translate(this.position.x, this.position.y);
+    this.p5.push();
+    this.p5.translate(this.position.x, this.position.y);
 
-    p5.noStroke();
-    p5.fill(this.color);
-    p5.beginShape();
-    for (let a = 0; a < p5.TWO_PI; a += p5.TWO_PI / this.vertices) {
-      const x = this.radius * p5.sin(a);
-      const y = this.radius * p5.cos(a);
+    this.p5.noStroke();
+    this.p5.fill(this.color);
+    this.p5.beginShape();
+    for (let a = 0; a < this.p5.TWO_PI; a += this.p5.TWO_PI / this.vertices) {
+      const x = this.radius * this.p5.sin(a);
+      const y = this.radius * this.p5.cos(a);
 
       const new_x =
         x +
-        p5.noise(
+        this.p5.noise(
           (this.offset.x + x) / this.noise,
           (this.offset.y + y) / this.noise,
           this.offset.z
         ) *
           px_offset *
-          p5.sin(a);
+          this.p5.sin(a);
 
       const new_y =
         y +
-        p5.noise(
+        this.p5.noise(
           (this.offset.x + x) / this.noise,
           (this.offset.y + y) / this.noise,
           this.offset.z
         ) *
           px_offset *
-          p5.cos(a);
-      p5.vertex(new_x, new_y);
+          this.p5.cos(a);
+      this.p5.vertex(new_x, new_y);
     }
-    p5.endShape();
-    p5.pop();
+    this.p5.endShape();
+    this.p5.pop();
 
     this.offset.add(this.speed.x, this.speed.y, this.speed.z);
+  }
+
+  getPosition(): Vector {
+    return this.position;
   }
 }

@@ -5,6 +5,7 @@ import { Blobby } from '../ Classes/Blobby';
 export default class Target extends Blobby {
   constructor(p5: P5) {
     super(
+      p5,
       40,
       200,
       75,
@@ -15,7 +16,7 @@ export default class Target extends Blobby {
     );
   }
 
-  draw(p5: P5): void {
-    super.draw(p5);
+  draw(): void {
+    super.draw();
   }
 }

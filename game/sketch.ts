@@ -2,6 +2,7 @@ import P5 from 'p5';
 
 import Cell from './Entities/Cell';
 import Target from './Entities/Target';
+import evaluate from './Functions/evaluate';
 import populate from './Functions/populate';
 
 enum Population {
@@ -13,11 +14,11 @@ enum Population {
 }
 
 const sketch = (p5: P5): void => {
-  // our target
-  const target: Target = new Target(p5);
-
   // our population of cells
   let cells: Cell[] = populate(p5, Population.Size, Population.Lifespan);
+
+  // our target
+  const target: Target = new Target(p5);
 
   // the current step (frame) we are in
   let step = 0;
@@ -27,23 +28,28 @@ const sketch = (p5: P5): void => {
     p5.background(11, 0, 20);
 
     // we draw when the step is smaller than the lifespan
-    if (step < Population.Lifespan) {
-      // draw the cells
-      cells.forEach((cell) => {
-        cell.draw(p5);
-      });
+    if (step > Population.Lifespan) {
+      // evaluate the current population before creating a new one
+      evaluate(cells);
 
-      // draw the target
-      target.draw(p5);
-
-      // increase the steps
-      step += 1;
-    } else {
       // create a new population
       cells = populate(p5, Population.Size, Population.Lifespan);
 
       // reset the steps
       step = 0;
+    } else {
+      // draw the cells
+      cells.forEach((cell) => {
+        cell.setFitness(target);
+
+        cell.draw();
+      });
+
+      // draw the target
+      target.draw();
+
+      // increase the steps
+      step += 1;
     }
   };
 

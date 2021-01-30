@@ -17,19 +17,34 @@ const sketch = (p5: P5): void => {
   const target: Target = new Target(p5);
 
   // our population of cells
-  const cells: Cell[] = populate(p5, Population.Size, Population.Lifespan);
+  let cells: Cell[] = populate(p5, Population.Size, Population.Lifespan);
+
+  // the current step (frame) we are in
+  let step = 0;
 
   p5.draw = (): void => {
     // giving the background a color
     p5.background(11, 0, 20);
 
-    // draw the cells
-    cells.forEach((cell) => {
-      cell.draw(p5);
-    });
+    // we draw when the step is smaller than the lifespan
+    if (step < Population.Lifespan) {
+      // draw the cells
+      cells.forEach((cell) => {
+        cell.draw(p5);
+      });
 
-    // draw the target
-    target.draw(p5);
+      // draw the target
+      target.draw(p5);
+
+      // increase the steps
+      step += 1;
+    } else {
+      // create a new population
+      cells = populate(p5, Population.Size, Population.Lifespan);
+
+      // reset the steps
+      step = 0;
+    }
   };
 
   p5.setup = (): void => {

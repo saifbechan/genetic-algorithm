@@ -14,8 +14,11 @@ enum Population {
 }
 
 const sketch = (p5: P5): void => {
+  // pool of 'parent' cells to create next population
+  let pool: Cell[] = [];
+
   // our population of cells
-  let cells: Cell[] = populate(p5, Population.Size, Population.Lifespan);
+  let cells: Cell[] = populate(p5, Population.Size, Population.Lifespan, pool);
 
   // our target
   const target: Target = new Target(p5);
@@ -30,10 +33,10 @@ const sketch = (p5: P5): void => {
     // we draw when the step is smaller than the lifespan
     if (step > Population.Lifespan) {
       // evaluate the current population before creating a new one
-      evaluate(cells);
+      pool = evaluate(cells);
 
       // create a new population
-      cells = populate(p5, Population.Size, Population.Lifespan);
+      cells = populate(p5, Population.Size, Population.Lifespan, pool);
 
       // reset the steps
       step = 0;

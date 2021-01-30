@@ -9,9 +9,10 @@ export default class Cell extends Blobby {
   private readonly acceleration: Vector;
   private readonly velocity: Vector;
 
+  private step = 0;
   private fitness = 0;
 
-  constructor(p5: P5, lifespan: number) {
+  constructor(p5: P5, lifespan: number, parents: Cell[]) {
     super(
       p5,
       10,
@@ -30,12 +31,39 @@ export default class Cell extends Blobby {
     this.acceleration = this.p5.createVector();
     this.velocity = this.p5.createVector();
 
+    if (parents.length === 0) {
+      this.generateDNA(lifespan);
+    } else {
+      this.inheritDNA(lifespan, parents);
+    }
+  }
+
+  private generateDNA(lifespan: number): void {
+    // create a random step
     while (this.dna.length < lifespan) {
       this.dna.push(
         this.p5
           .createVector(this.p5.random(-1, 1), this.p5.random(-1, 1))
           .setMag(0.1)
       );
+    }
+  }
+
+  private inheritDNA(lifespan: number, parents: Cell[]): void {
+    // extract the parents to x and y
+    const [x, y] = parents;
+
+    // get a random midpoint
+    const middle = Math.floor(Math.random() * lifespan);
+
+    // create dna based on parent x and parent y
+    while (this.dna.length < lifespan) {
+      const index = this.dna.length;
+      if (index < middle) {
+        this.dna.push(x.getDNA(index));
+      } else {
+        this.dna.push(y.getDNA(index));
+      }
     }
   }
 
@@ -55,9 +83,21 @@ export default class Cell extends Blobby {
     );
   }
 
+  normalizeFitness(max_fitness: number): void {
+    this.fitness /= max_fitness;
+  }
+
+  getFitness(): number {
+    return this.fitness;
+  }
+
+  getDNA(index: number): Vector {
+    return this.dna[index];
+  }
+
   update(): boolean {
     // get the next move of the cell
-    const next = this.dna.pop();
+    const next = this.dna[this.step];
 
     // return if there is no next move
     if (!next) return false;
@@ -70,6 +110,8 @@ export default class Cell extends Blobby {
     this.acceleration.mult(0);
     this.velocity.limit(3);
 
+    this.step += 1;
+
     return true;
   }
 
@@ -79,9 +121,5 @@ export default class Cell extends Blobby {
 
     // draw the cell
     super.draw();
-  }
-
-  getFitness(): number {
-    return this.fitness;
   }
 }

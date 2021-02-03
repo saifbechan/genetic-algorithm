@@ -2,6 +2,7 @@ import P5 from 'p5';
 
 import Cell from './Entities/Cell';
 import Target from './Entities/Target';
+import Virus from './Entities/Virus';
 import evaluate from './Functions/evaluate';
 import populate from './Functions/populate';
 
@@ -10,7 +11,7 @@ enum Population {
   Size = 50,
 
   // how long does a generation last
-  Lifespan = 500,
+  Lifespan = 800,
 }
 
 const sketch = (p5: P5): void => {
@@ -20,8 +21,11 @@ const sketch = (p5: P5): void => {
   // our population of cells
   let cells: Cell[] = populate(p5, Population.Size, Population.Lifespan, pool);
 
-  // our target
+  // our target to go towards
   const target: Target = new Target(p5);
+
+  // our virus to avoid
+  const virus: Virus = new Virus(p5);
 
   // the current step (frame) we are in
   let step = 0;
@@ -33,7 +37,7 @@ const sketch = (p5: P5): void => {
     // we draw when the step is smaller than the lifespan
     if (step > Population.Lifespan) {
       // evaluate the current population before creating a new one
-      pool = evaluate(cells);
+      pool = evaluate(p5, cells, target);
 
       // create a new population
       cells = populate(p5, Population.Size, Population.Lifespan, pool);
@@ -43,13 +47,16 @@ const sketch = (p5: P5): void => {
     } else {
       // draw the cells
       cells.forEach((cell) => {
-        cell.draw();
+        cell.update(target, virus);
 
-        cell.setFitness(target);
+        cell.draw();
       });
 
       // draw the target
       target.draw();
+
+      // draw the virus
+      virus.draw();
 
       // increase the steps
       step += 1;

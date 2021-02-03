@@ -1,5 +1,7 @@
 import P5, { Vector } from 'p5';
 
+import Target from '../Entities/Target';
+
 export abstract class Blobby {
   protected readonly p5: P5;
 
@@ -33,7 +35,7 @@ export abstract class Blobby {
     this.color = color;
   }
 
-  protected draw(): void {
+  public draw(): void {
     const px_offset = this.radius / 2;
 
     this.p5.push();
@@ -73,7 +75,20 @@ export abstract class Blobby {
     this.offset.add(this.speed.x, this.speed.y, this.speed.z);
   }
 
+  getDistanceToTarget(target: Target): number {
+    return this.p5.dist(
+      this.position.x,
+      this.position.y,
+      target.getPosition().x,
+      target.getPosition().y
+    );
+  }
+
   getPosition(): Vector {
     return this.position;
+  }
+
+  getRadius(): number {
+    return this.radius;
   }
 }

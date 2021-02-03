@@ -37,7 +37,7 @@ const sketch = (p5: P5): void => {
     // we draw when the step is smaller than the lifespan
     if (step > Population.Lifespan) {
       // evaluate the current population before creating a new one
-      pool = evaluate(p5, cells, target);
+      pool = evaluate(p5, cells);
 
       // create a new population
       cells = populate(p5, Population.Size, Population.Lifespan, pool);

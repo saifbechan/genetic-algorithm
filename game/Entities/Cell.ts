@@ -11,8 +11,10 @@ export default class Cell extends Blobby {
   private readonly velocity: Vector;
 
   private step = 0;
-  private crashed = false;
-  private reached = false;
+  private crashed = 0;
+  private reached = 0;
+
+  private closestDistance = Infinity;
 
   constructor(p5: P5, dna: Vector[]) {
     super(
@@ -72,25 +74,37 @@ export default class Cell extends Blobby {
   }
 
   private setReachedIfReached(target: Target): void {
-    if (this.getDistanceToTarget(target) < target.getRadius()) {
-      this.reached = true;
+    // get the current distance to the target
+    const distanceToTarget = this.p5.dist(
+      this.position.x,
+      this.position.y,
+      target.getPosition().x,
+      target.getPosition().y
+    );
+
+    // register if this is the closest we came to the target
+    this.closestDistance = Math.min(distanceToTarget, this.closestDistance);
+
+    // register if we reached the target
+    if (distanceToTarget < target.getRadius()) {
+      this.reached = this.step;
     }
   }
 
   private setCrashedIfCrashed(virus: Virus): void {
     // check left & right of the bounding box
     if (this.position.x < 0 || this.position.x > this.p5.windowWidth) {
-      this.crashed = true;
+      this.crashed = this.step;
       return;
     }
 
     // check top & bottom of the bounding box
     if (this.position.y < 0 || this.position.y > this.p5.windowHeight) {
-      this.crashed = true;
+      this.crashed = this.step;
       return;
     }
 
-    const distance_to_virus = this.p5.dist(
+    const distanceToVirus = this.p5.dist(
       this.position.x,
       this.position.y,
       virus.getPosition().x,
@@ -98,17 +112,21 @@ export default class Cell extends Blobby {
     );
 
     // check if we hit a virus
-    if (distance_to_virus < virus.getRadius() + 40) {
-      this.crashed = true;
+    if (distanceToVirus < virus.getRadius() + 40) {
+      this.crashed = this.step;
       return;
     }
   }
 
   hasCrashed(): boolean {
-    return this.crashed;
+    return this.crashed > 0;
   }
 
   hasReachedTarget(): boolean {
-    return this.reached;
+    return this.reached > 0;
+  }
+
+  getClosestDistance(): number {
+    return this.closestDistance;
   }
 }

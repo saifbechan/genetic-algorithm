@@ -11,7 +11,7 @@ export default class Virus extends Blobby {
       250,
       p5.createVector(1000, 1000, 1000),
       p5.createVector(0.1, 0.7, 0.007),
-      p5.createVector(p5.windowWidth / 2, 400),
+      p5.createVector(p5.windowWidth / 2, 500),
       [158, 240, 26, 90]
     );
   }

@@ -1,7 +1,5 @@
 import P5, { Vector } from 'p5';
 
-import Target from '../Entities/Target';
-
 export abstract class Blobby {
   protected readonly p5: P5;
 
@@ -73,15 +71,6 @@ export abstract class Blobby {
     this.p5.pop();
 
     this.offset.add(this.speed.x, this.speed.y, this.speed.z);
-  }
-
-  getDistanceToTarget(target: Target): number {
-    return this.p5.dist(
-      this.position.x,
-      this.position.y,
-      target.getPosition().x,
-      target.getPosition().y
-    );
   }
 
   getPosition(): Vector {

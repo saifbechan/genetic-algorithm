@@ -11,6 +11,17 @@ export default class DNA {
     }
   }
 
+  private static random(p5: P5, lifespan: number): Vector[] {
+    const dna: Vector[] = [];
+
+    // create a random step
+    while (dna.length < lifespan) {
+      dna.push(p5.createVector(p5.random(-1, 1), p5.random(-1, 1)).setMag(0.1));
+    }
+
+    return dna;
+  }
+
   private static fromParents(lifespan: number, [x, y]: Cell[]): Vector[] {
     const dna: Vector[] = [];
 
@@ -25,17 +36,6 @@ export default class DNA {
       } else {
         dna.push(y.getDNA(index));
       }
-    }
-
-    return dna;
-  }
-
-  private static random(p5: P5, lifespan: number): Vector[] {
-    const dna: Vector[] = [];
-
-    // create a random step
-    while (dna.length < lifespan) {
-      dna.push(p5.createVector(p5.random(-1, 1), p5.random(-1, 1)).setMag(0.1));
     }
 
     return dna;

@@ -2,6 +2,7 @@ import P5 from 'p5';
 
 import Cell from './Entities/Cell';
 import Target from './Entities/Target';
+import evaluate from './Functions/evaluate';
 import populate from './Functions/populate';
 
 enum Population {
@@ -13,8 +14,11 @@ enum Population {
 }
 
 const sketch = (p5: P5): void => {
+  // pool of 'parent' cells to create next population
+  let pool: Cell[] = [];
+
   // our population of cells
-  let cells: Cell[] = populate(p5, Population.Size, Population.Lifespan);
+  let cells: Cell[] = populate(p5, Population.Size, Population.Lifespan, pool);
 
   // our target to go towards
   const target: Target = new Target(p5);
@@ -42,8 +46,11 @@ const sketch = (p5: P5): void => {
       // increase the steps
       step += 1;
     } else {
-      // create a new population
-      cells = populate(p5, Population.Size, Population.Lifespan);
+      // evaluate how the previous generation behaved
+      pool = evaluate(p5, cells);
+
+      // create a new population based on the old one
+      cells = populate(p5, Population.Size, Population.Lifespan, pool);
 
       // reset the steps
       step = 0;

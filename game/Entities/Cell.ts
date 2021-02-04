@@ -2,6 +2,7 @@ import P5, { Vector } from 'p5';
 
 import { Blobby } from '../ Classes/Blobby';
 import Target from './Target';
+import Virus from './Virus';
 
 export default class Cell extends Blobby {
   private readonly dna: Vector[] = [];
@@ -40,7 +41,7 @@ export default class Cell extends Blobby {
     return this.dna[index];
   }
 
-  update(target: Target): void {
+  update(target: Target, virus: Virus): void {
     // get the next move of the cell
     const next = this.dna[this.step];
 
@@ -58,7 +59,7 @@ export default class Cell extends Blobby {
     this.step += 1;
 
     // check if we crashed
-    this.setCrashedIfCrashed();
+    this.setCrashedIfCrashed(virus);
 
     // check if we reached the target
     this.setReachedIfReached(target);
@@ -90,7 +91,7 @@ export default class Cell extends Blobby {
     }
   }
 
-  private setCrashedIfCrashed(): void {
+  private setCrashedIfCrashed(virus: Virus): void {
     // check left & right of the bounding box
     if (this.position.x < 0 || this.position.x > this.p5.windowWidth) {
       this.crashed = this.step;
@@ -99,6 +100,19 @@ export default class Cell extends Blobby {
 
     // check top & bottom of the bounding box
     if (this.position.y < 0 || this.position.y > this.p5.windowHeight) {
+      this.crashed = this.step;
+      return;
+    }
+
+    const distanceToVirus = this.p5.dist(
+      this.position.x,
+      this.position.y,
+      virus.getPosition().x,
+      virus.getPosition().y
+    );
+
+    // check if we hit a virus
+    if (distanceToVirus < virus.getRadius() + 40) {
       this.crashed = this.step;
       return;
     }
